@@ -337,77 +337,30 @@ Le notebook `CAN 2025.ipynb` contient :
 <img width="573" height="379" alt="image" src="https://github.com/user-attachments/assets/1a6ed039-9de4-4914-b9e8-8de87de901d7" />
 
 ### Simulation Match par Match
-![Match Simulation](https://via.placeholder.com/800x400?text=Simulation+Match)
+<img width="551" height="390" alt="image" src="https://github.com/user-attachments/assets/ab4e6926-1b0d-4cdf-b4b7-45b3b41a9835" />
 
 ### Simulation Tournoi
-![Tournament Simulation](https://via.placeholder.com/800x400?text=Simulation+Tournoi)
+<img width="559" height="254" alt="image" src="https://github.com/user-attachments/assets/e3ee0404-a92a-4e36-953d-0a6163398c07" />
 
 ---
 
-## 👥 Contribuer
 
-Les contributions sont les bienvenues ! Voici comment contribuer :
-
-1. **Fork** le projet
-2. Créez une **branche** pour votre fonctionnalité
-   ```bash
-   git checkout -b feature/nouvelle-fonctionnalite
-   ```
-3. **Committez** vos changements
-   ```bash
-   git commit -m "Ajout d'une nouvelle fonctionnalité"
-   ```
-4. **Pushez** vers la branche
-   ```bash
-   git push origin feature/nouvelle-fonctionnalite
-   ```
-5. Ouvrez une **Pull Request**
-
-### Idées d'améliorations
-- [ ] Ajouter plus de features au modèle ML
-- [ ] Intégrer des données en temps réel
-- [ ] Ajouter un comparateur d'équipes
-- [ ] Implémenter un mode "What-If"
-- [ ] Ajouter des graphiques de forme (5 derniers matchs)
-- [ ] Export des prédictions en PDF
-- [ ] Mode challenge (comparer avec l'IA)
-- [ ] Analyse post-tournoi
-
----
-
-## 📄 Licence
-
-Ce projet est sous licence **MIT**. Voir le fichier `LICENSE` pour plus de détails.
-
----
 
 ## 📞 Contact
 
 **Auteur** : Moulay El Hassen Maasly 
+
 **Email** : moulayelymaaly@gmail.com 
+
 **GitHub** : [@Maaly22240](https://github.com/Maaly22240)  
+
 **LinkedIn** : [linkedin](https://www.linkedin.com/in/maaly-moulay-el-hassan-65552a27b/)
 
 ---
 
-## 🙏 Remerciements
 
-- **CAF** (Confédération Africaine de Football) pour les données historiques
-- **Scikit-learn** pour les outils de Machine Learning
-- **Flask** pour le framework web
-- **Bootstrap** pour le design responsive
-- **Chart.js** pour les graphiques interactifs
 
----
 
-## 📊 Statistiques du projet
-
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-5000+-blue)
-![Files](https://img.shields.io/badge/Files-15+-green)
-![Python](https://img.shields.io/badge/Python-3.8+-yellow)
-![Status](https://img.shields.io/badge/Status-Active-success)
-
----
 
 ## 🎉 CAN 2025
 
@@ -426,4 +379,5 @@ Ce projet est sous licence **MIT**. Voir le fichier `LICENSE` pour plus de déta
 
 
 </div>
+
 
