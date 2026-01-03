@@ -333,7 +333,8 @@ Le notebook `CAN 2025.ipynb` contient :
 ## 📸 Screenshots
 
 ### Dashboard
-![Dashboard](https://via.placeholder.com/800x400?text=Dashboard+CAN+2025)
+<img width="587" height="372" alt="image" src="https://github.com/user-attachments/assets/4479d002-a25f-4ed3-902f-d955aaafc2bd" />
+<img width="573" height="379" alt="image" src="https://github.com/user-attachments/assets/1a6ed039-9de4-4914-b9e8-8de87de901d7" />
 
 ### Simulation Match par Match
 ![Match Simulation](https://via.placeholder.com/800x400?text=Simulation+Match)
@@ -425,3 +426,4 @@ Ce projet est sous licence **MIT**. Voir le fichier `LICENSE` pour plus de déta
 
 
 </div>
+
