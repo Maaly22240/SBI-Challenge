@@ -1,0 +1,122 @@
+{
+  "Maroc": {
+    "flag": "🇲🇦",
+    "code": "MA",
+    "name": "Maroc"
+  },
+  "Mali": {
+    "flag": "🇲🇱",
+    "code": "ML",
+    "name": "Mali"
+  },
+  "Zambie": {
+    "flag": "🇿🇲",
+    "code": "ZM",
+    "name": "Zambie"
+  },
+  "Comores": {
+    "flag": "🇰🇲",
+    "code": "KM",
+    "name": "Comores"
+  },
+  "Égypte": {
+    "flag": "🇪🇬",
+    "code": "EG",
+    "name": "Égypte"
+  },
+  "Ghana": {
+    "flag": "🇬🇭",
+    "code": "GH",
+    "name": "Ghana"
+  },
+  "Angola": {
+    "flag": "🇦🇴",
+    "code": "AO",
+    "name": "Angola"
+  },
+  "Soudan": {
+    "flag": "🇸🇩",
+    "code": "SD",
+    "name": "Soudan"
+  },
+  "Nigeria": {
+    "flag": "🇳🇬",
+    "code": "NG",
+    "name": "Nigeria"
+  },
+  "Tunisie": {
+    "flag": "🇹🇳",
+    "code": "TN",
+    "name": "Tunisie"
+  },
+  "Ouganda": {
+    "flag": "🇺🇬",
+    "code": "UG",
+    "name": "Ouganda"
+  },
+  "Tanzanie": {
+    "flag": "🇹🇿",
+    "code": "TZ",
+    "name": "Tanzanie"
+  },
+  "Sénégal": {
+    "flag": "🇸🇳",
+    "code": "SN",
+    "name": "Sénégal"
+  },
+  "RD Congo": {
+    "flag": "🇨🇩",
+    "code": "CD",
+    "name": "RD Congo"
+  },
+  "Bénin": {
+    "flag": "🇧🇯",
+    "code": "BJ",
+    "name": "Bénin"
+  },
+  "Botswana": {
+    "flag": "🇧🇼",
+    "code": "BW",
+    "name": "Botswana"
+  },
+  "Algérie": {
+    "flag": "🇩🇿",
+    "code": "DZ",
+    "name": "Algérie"
+  },
+  "Burkina Faso": {
+    "flag": "🇧🇫",
+    "code": "BF",
+    "name": "Burkina Faso"
+  },
+  "Guinée Équatoriale": {
+    "flag": "🇬🇶",
+    "code": "GQ",
+    "name": "Guinée Équatoriale"
+  },
+  "Soudan du Sud": {
+    "flag": "🇸🇸",
+    "code": "SS",
+    "name": "Soudan du Sud"
+  },
+  "Cameroun": {
+    "flag": "🇨🇲",
+    "code": "CM",
+    "name": "Cameroun"
+  },
+  "Côte d'Ivoire": {
+    "flag": "🇨🇮",
+    "code": "CI",
+    "name": "Côte d'Ivoire"
+  },
+  "Gambie": {
+    "flag": "🇬🇲",
+    "code": "GM",
+    "name": "Gambie"
+  },
+  "Zimbabwe": {
+    "flag": "🇿🇼",
+    "code": "ZW",
+    "name": "Zimbabwe"
+  }
+}

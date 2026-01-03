@@ -1,0 +1,722 @@
+{% extends "base.html" %}
+
+{% block title %}Simulation Match par Match CAN 2025{% endblock %}
+
+{% block extra_css %}
+<style>
+    .match-simulator {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 20px;
+        padding: 2.5rem;
+        backdrop-filter: blur(10px);
+        margin-bottom: 2rem;
+    }
+    
+    .match-setup {
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid rgba(255, 215, 0, 0.5);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .team-selector {
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid rgba(255, 215, 0, 0.5);
+        border-radius: 10px;
+        padding: 2rem;
+        transition: all 0.3s;
+    }
+    
+    .team-selector:hover {
+        border-color: var(--can-gold);
+        box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+    }
+    
+    .team-label {
+        color: var(--can-gold);
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        display: block;
+        text-align: center;
+    }
+    
+    select {
+        background: rgba(0, 0, 0, 0.5) !important;
+        color: #fff !important;
+        border: 2px solid rgba(255, 215, 0, 0.3) !important;
+        border-radius: 10px !important;
+        padding: 0.8rem !important;
+        font-size: 1.1rem !important;
+        width: 100% !important;
+        transition: all 0.3s;
+    }
+    
+    select:focus {
+        border-color: var(--can-gold) !important;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3) !important;
+        outline: none !important;
+    }
+    
+    select option {
+        background: var(--can-dark);
+        color: #fff;
+        padding: 0.5rem;
+    }
+    
+    .vs-badge {
+        background: linear-gradient(135deg, var(--can-red) 0%, var(--can-green) 100%);
+        color: var(--can-gold);
+        font-weight: 700;
+        font-size: 2.5rem;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        display: inline-block;
+        margin: 2rem 0;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .simulate-btn {
+        background: linear-gradient(135deg, var(--can-gold) 0%, #FFA500 100%);
+        color: var(--can-dark);
+        font-weight: 700;
+        font-size: 1.3rem;
+        padding: 1rem 3rem;
+        border: none;
+        border-radius: 50px;
+        transition: all 0.3s;
+        box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        width: 100%;
+    }
+    
+    .simulate-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+    }
+    
+    .simulate-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    /* Match Animation */
+    .match-animation {
+        background: linear-gradient(135deg, rgba(0, 107, 63, 0.3) 0%, rgba(193, 39, 45, 0.3) 100%);
+        border: 3px solid var(--can-gold);
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        margin-top: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .match-animation::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    .team-display {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 2rem 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .team-box {
+        flex: 1;
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 15px;
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        transition: all 0.5s;
+    }
+    
+    .team-box.winner {
+        border-color: var(--can-gold);
+        background: rgba(255, 215, 0, 0.2);
+        transform: scale(1.05);
+        box-shadow: 0 10px 40px rgba(255, 215, 0, 0.5);
+    }
+    
+    .team-name-display {
+        color: #fff;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .team-score {
+        font-size: 4rem;
+        font-weight: 700;
+        color: var(--can-gold);
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        animation: scoreReveal 0.5s ease;
+    }
+    
+    @keyframes scoreReveal {
+        from {
+            opacity: 0;
+            transform: scale(0);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    .vs-divider-display {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 2rem;
+    }
+    
+    .match-stats {
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-top: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+    
+    .stat-label {
+        color: var(--can-gold);
+        font-weight: 600;
+        flex: 1;
+        text-align: center;
+    }
+    
+    .stat-value {
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 700;
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    .prob-bar-container {
+        flex: 2;
+        margin: 0 2rem;
+    }
+    
+    .prob-bar {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 50px;
+        height: 30px;
+        overflow: hidden;
+        position: relative;
+        border: 2px solid rgba(255, 215, 0, 0.3);
+    }
+    
+    .prob-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--can-gold) 0%, #FFA500 100%);
+        transition: width 1s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--can-dark);
+        font-weight: 700;
+    }
+    
+    .winner-badge {
+        background: var(--can-gold);
+        color: var(--can-dark);
+        font-size: 1.5rem;
+        font-weight: 700;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        display: inline-block;
+        margin: 2rem 0;
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        animation: winnerReveal 0.8s ease;
+    }
+    
+    @keyframes winnerReveal {
+        0% {
+            opacity: 0;
+            transform: rotateY(90deg) scale(0.5);
+        }
+        100% {
+            opacity: 1;
+            transform: rotateY(0deg) scale(1);
+        }
+    }
+    
+    .next-match-btn {
+        background: linear-gradient(135deg, var(--can-green) 0%, var(--can-red) 100%);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.2rem;
+        padding: 1rem 2.5rem;
+        border: 2px solid var(--can-gold);
+        border-radius: 50px;
+        transition: all 0.3s;
+        margin-top: 2rem;
+    }
+    
+    .next-match-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+    }
+    
+    .stage-switch {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .stage-option {
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        padding: 0.8rem 1.5rem;
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 600;
+        border-radius: 10px;
+    }
+    
+    .stage-option.active {
+        background: var(--can-gold);
+        color: var(--can-dark);
+        border-color: var(--can-gold);
+    }
+    
+    .stage-option:hover:not(.active) {
+        background: rgba(255, 215, 0, 0.2);
+        border-color: var(--can-gold);
+    }
+    
+    .match-history {
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .history-item {
+        background: rgba(255, 255, 255, 0.05);
+        border-left: 3px solid var(--can-gold);
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .history-teams {
+        color: #fff;
+        font-weight: 600;
+    }
+    
+    .history-score {
+        color: var(--can-gold);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .team-display {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .vs-divider-display {
+            transform: rotate(90deg);
+            margin: 1rem 0;
+        }
+        
+        .stat-row {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .prob-bar-container {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container text-center">
+        <h1>
+            <i class="fas fa-futbol"></i>
+            Simulation Match par Match
+        </h1>
+        <p class="lead">Simulez chaque match de la CAN 2025 étape par étape</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Sélection de phase -->
+            <div class="match-simulator">
+                <div class="text-center mb-4">
+                    <label class="team-label">
+                        <i class="fas fa-trophy"></i> Choisir la Phase
+                    </label>
+                    <div class="stage-switch">
+                        <div class="stage-option active" data-stage="group">
+                            <i class="fas fa-layer-group"></i> Phase de Groupes
+                        </div>
+                        <div class="stage-option" data-stage="knockout">
+                            <i class="fas fa-medal"></i> Phase à Élimination
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sélection des équipes -->
+                <div class="match-setup">
+                    <form id="match-form">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="team-selector">
+                                    <label class="team-label">
+                                        <i class="fas fa-home"></i> Équipe Domicile
+                                    </label>
+                                    <select id="home-team" class="form-select" required>
+                                        <option value="">Sélectionner...</option>
+                                        {% for group, teams in groups.items() %}
+                                            <optgroup label="Groupe {{ group }}">
+                                                {% for team in teams %}
+                                                    <option value="{{ team }}">{{ team }}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
+                                <div class="vs-badge">VS</div>
+                            </div>
+                            
+                            <div class="col-md-5">
+                                <div class="team-selector">
+                                    <label class="team-label">
+                                        <i class="fas fa-plane"></i> Équipe Extérieur
+                                    </label>
+                                    <select id="away-team" class="form-select" required>
+                                        <option value="">Sélectionner...</option>
+                                        {% for group, teams in groups.items() %}
+                                            <optgroup label="Groupe {{ group }}">
+                                                {% for team in teams %}
+                                                    <option value="{{ team }}">{{ team }}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button type="submit" class="simulate-btn">
+                                <i class="fas fa-play-circle"></i> Lancer la Simulation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Animation du match -->
+            <div id="match-animation" class="match-animation" style="display: none;">
+                <h2 style="color: var(--can-gold); font-weight: 700; margin-bottom: 2rem;">
+                    <i class="fas fa-futbol"></i> Match en Cours
+                </h2>
+                
+                <div class="team-display">
+                    <div class="team-box" id="home-box">
+                        <div class="team-name-display" id="home-name-anim"></div>
+                        <div class="team-score" id="home-score">-</div>
+                    </div>
+                    
+                    <div class="vs-divider-display">VS</div>
+                    
+                    <div class="team-box" id="away-box">
+                        <div class="team-name-display" id="away-name-anim"></div>
+                        <div class="team-score" id="away-score">-</div>
+                    </div>
+                </div>
+                
+                <div id="winner-display" style="display: none;">
+                    <div class="winner-badge">
+                        <i class="fas fa-trophy"></i>
+                        Vainqueur: <span id="winner-name"></span>
+                    </div>
+                </div>
+                
+                <!-- Statistiques du match -->
+                <div class="match-stats">
+                    <h4 style="color: var(--can-gold); text-align: center; margin-bottom: 1.5rem;">
+                        <i class="fas fa-chart-bar"></i> Statistiques & Probabilités
+                    </h4>
+                    
+                    <div class="stat-row">
+                        <div class="stat-value" id="home-prob-value">-</div>
+                        <div class="prob-bar-container">
+                            <div class="stat-label">Probabilité de Victoire</div>
+                            <div class="prob-bar">
+                                <div class="prob-fill" id="home-prob-bar" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="away-prob-value">-</div>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <div class="stat-label">Confiance du Modèle</div>
+                        <div class="stat-value" style="color: var(--can-gold);">
+                            <span id="confidence-value">-</span>%
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button class="next-match-btn" onclick="resetMatch()">
+                        <i class="fas fa-redo"></i> Nouveau Match
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Historique des matchs -->
+            <div id="match-history-section" style="display: none;">
+                <h3 style="color: var(--can-gold); text-align: center; margin: 2rem 0;">
+                    <i class="fas fa-history"></i> Historique des Matchs Simulés
+                </h3>
+                <div class="match-history" id="match-history"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let isGroupStage = true;
+let matchHistory = [];
+
+// Gestion du switch de phase
+document.querySelectorAll('.stage-option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.stage-option').forEach(o => o.classList.remove('active'));
+        this.classList.add('active');
+        isGroupStage = this.dataset.stage === 'group';
+    });
+});
+
+// Gestion du formulaire
+document.getElementById('match-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const homeTeam = document.getElementById('home-team').value;
+    const awayTeam = document.getElementById('away-team').value;
+    
+    if (!homeTeam || !awayTeam) {
+        alert('Veuillez sélectionner les deux équipes');
+        return;
+    }
+    
+    if (homeTeam === awayTeam) {
+        alert('Veuillez sélectionner deux équipes différentes');
+        return;
+    }
+    
+    await simulateMatch(homeTeam, awayTeam);
+});
+
+async function simulateMatch(homeTeam, awayTeam) {
+    const animationDiv = document.getElementById('match-animation');
+    const btn = document.querySelector('.simulate-btn');
+    
+    // Désactiver le bouton
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Simulation...';
+    
+    // Afficher l'animation
+    animationDiv.style.display = 'block';
+    
+    // Reset des boxes
+    document.getElementById('home-box').classList.remove('winner');
+    document.getElementById('away-box').classList.remove('winner');
+    document.getElementById('winner-display').style.display = 'none';
+    
+    // Afficher les noms
+    document.getElementById('home-name-anim').textContent = homeTeam;
+    document.getElementById('away-name-anim').textContent = awayTeam;
+    document.getElementById('home-score').textContent = '-';
+    document.getElementById('away-score').textContent = '-';
+    
+    // Scroll vers l'animation
+    animationDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    try {
+        // Prédiction
+        const response = await fetch('/api/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                home_team: homeTeam,
+                away_team: awayTeam,
+                is_group: isGroupStage
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            alert('Erreur: ' + data.error);
+            return;
+        }
+        
+        // Afficher les probabilités
+        const homeProb = (data.home_win_prob * 100).toFixed(1);
+        const awayProb = (data.away_win_prob * 100).toFixed(1);
+        
+        document.getElementById('home-prob-value').textContent = homeProb + '%';
+        document.getElementById('away-prob-value').textContent = awayProb + '%';
+        document.getElementById('confidence-value').textContent = (data.confidence * 100).toFixed(1);
+        
+        // Animer les barres
+        setTimeout(() => {
+            document.getElementById('home-prob-bar').style.width = homeProb + '%';
+        }, 500);
+        
+        // Attendre un peu pour le suspense
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Générer les scores
+        let homeScore, awayScore;
+        if (data.home_win_prob > data.away_win_prob) {
+            homeScore = Math.floor(Math.random() * 2) + 1;
+            awayScore = isGroupStage ? Math.floor(Math.random() * (homeScore + 1)) : Math.max(0, homeScore - 1);
+        } else {
+            awayScore = Math.floor(Math.random() * 2) + 1;
+            homeScore = isGroupStage ? Math.floor(Math.random() * (awayScore + 1)) : Math.max(0, awayScore - 1);
+        }
+        
+        // Pour les matchs à élimination, pas de nul
+        if (!isGroupStage && homeScore === awayScore) {
+            if (Math.random() > 0.5) homeScore++; else awayScore++;
+        }
+        
+        // Afficher les scores avec animation
+        document.getElementById('home-score').textContent = homeScore;
+        document.getElementById('away-score').textContent = awayScore;
+        
+        // Déterminer le gagnant
+        let winner = null;
+        if (homeScore > awayScore) {
+            document.getElementById('home-box').classList.add('winner');
+            winner = homeTeam;
+        } else if (awayScore > homeScore) {
+            document.getElementById('away-box').classList.add('winner');
+            winner = awayTeam;
+        } else {
+            winner = 'Match Nul';
+        }
+        
+        // Afficher le vainqueur
+        setTimeout(() => {
+            if (winner && winner !== 'Match Nul') {
+                document.getElementById('winner-name').textContent = winner;
+                document.getElementById('winner-display').style.display = 'block';
+            } else if (winner === 'Match Nul') {
+                document.getElementById('winner-name').textContent = 'Match Nul';
+                document.getElementById('winner-display').style.display = 'block';
+            }
+        }, 1000);
+        
+        // Ajouter à l'historique
+        matchHistory.unshift({
+            home: homeTeam,
+            away: awayTeam,
+            homeScore,
+            awayScore,
+            winner
+        });
+        
+        updateHistory();
+        
+    } catch (error) {
+        alert('Erreur lors de la simulation: ' + error.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-play-circle"></i> Lancer la Simulation';
+    }
+}
+
+function updateHistory() {
+    const historySection = document.getElementById('match-history-section');
+    const historyDiv = document.getElementById('match-history');
+    
+    if (matchHistory.length === 0) {
+        historySection.style.display = 'none';
+        return;
+    }
+    
+    historySection.style.display = 'block';
+    
+    historyDiv.innerHTML = matchHistory.map((match, index) => `
+        <div class="history-item">
+            <div class="history-teams">
+                ${match.home} vs ${match.away}
+            </div>
+            <div class="history-score">
+                ${match.homeScore} - ${match.awayScore}
+            </div>
+            <div style="color: var(--can-gold); font-weight: 600;">
+                ${match.winner !== 'Match Nul' ? '🏆 ' + match.winner : '🤝 Nul'}
+            </div>
+        </div>
+    `).join('');
+}
+
+function resetMatch() {
+    document.getElementById('match-animation').style.display = 'none';
+    document.getElementById('home-team').value = '';
+    document.getElementById('away-team').value = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+{% endblock %}

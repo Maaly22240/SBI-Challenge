@@ -1,0 +1,730 @@
+{% extends "base.html" %}
+
+{% block title %}Simulation Tournoi CAN 2025{% endblock %}
+
+{% block extra_css %}
+<style>
+    .simulation-container {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .phase-title {
+        color: var(--can-gold);
+        font-weight: 700;
+        font-size: 1.8rem;
+        text-align: center;
+        margin: 2rem 0 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    
+    .group-box {
+        background: rgba(0, 107, 63, 0.2);
+        border: 2px solid rgba(255, 215, 0, 0.4);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .group-header {
+        color: var(--can-gold);
+        font-weight: 700;
+        font-size: 1.3rem;
+        text-align: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+    }
+    
+    .match-item {
+        background: rgba(0, 0, 0, 0.4);
+        border-left: 3px solid var(--can-gold);
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s;
+    }
+    
+    .match-item:hover {
+        background: rgba(255, 215, 0, 0.1);
+        transform: translateX(5px);
+    }
+    
+    .team-name {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+    
+    .score {
+        background: var(--can-gold);
+        color: var(--can-dark);
+        padding: 0.3rem 0.8rem;
+        border-radius: 5px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        min-width: 40px;
+        text-align: center;
+    }
+    
+    .vs-divider {
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0 1rem;
+        font-weight: 600;
+    }
+    
+    .standings-table {
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .standings-table th {
+        color: var(--can-gold);
+        font-weight: 600;
+        padding: 0.5rem;
+        text-align: center;
+        border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        font-size: 0.9rem;
+    }
+    
+    .standings-table td {
+        color: #fff;
+        padding: 0.5rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.9rem;
+    }
+    
+    .qualified {
+        background: rgba(0, 255, 127, 0.2);
+        border-left: 3px solid #00ff7f;
+    }
+    
+    .knockout-bracket {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+    
+    .knockout-round {
+        flex: 1;
+        min-width: 250px;
+    }
+    
+    .knockout-match {
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
+        position: relative;
+    }
+    
+    .knockout-match.winner {
+        border-color: var(--can-gold);
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+    
+    .knockout-team {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem;
+        margin: 0.3rem 0;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 5px;
+    }
+    
+    .knockout-team.winner-team {
+        background: rgba(255, 215, 0, 0.2);
+        font-weight: 700;
+    }
+    
+    .simulate-btn {
+        background: linear-gradient(135deg, var(--can-gold) 0%, #FFA500 100%);
+        color: var(--can-dark);
+        font-weight: 700;
+        font-size: 1.2rem;
+        padding: 1rem 3rem;
+        border: none;
+        border-radius: 50px;
+        transition: all 0.3s;
+        box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 2rem 0;
+    }
+    
+    .simulate-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+    }
+    
+    .champion-card {
+        background: linear-gradient(135deg, var(--can-gold) 0%, #FFA500 100%);
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        margin: 2rem 0;
+        animation: championReveal 0.8s ease;
+    }
+    
+    @keyframes championReveal {
+        from {
+            opacity: 0;
+            transform: scale(0.8) rotateY(90deg);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) rotateY(0deg);
+        }
+    }
+    
+    .champion-card h2 {
+        color: var(--can-dark);
+        font-weight: 700;
+        font-size: 3rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 1rem 0;
+    }
+    
+    .trophy-icon {
+        font-size: 5rem;
+        color: var(--can-dark);
+        animation: trophyBounce 1s ease infinite;
+    }
+    
+    @keyframes trophyBounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    
+    .loading-content {
+        text-align: center;
+        color: var(--can-gold);
+    }
+    
+    .loading-spinner {
+        border: 5px solid rgba(255, 215, 0, 0.2);
+        border-top: 5px solid var(--can-gold);
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container text-center">
+        <h1>
+            <i class="fas fa-trophy"></i>
+            Simulation Complète CAN 2025
+        </h1>
+        <p class="lead">Simulez l'intégralité du tournoi avec l'IA</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="text-center">
+        <button class="simulate-btn" onclick="simulateTournament()">
+            <i class="fas fa-play-circle"></i> Simuler le Tournoi Complet
+        </button>
+    </div>
+    
+    <!-- Phase de Groupes -->
+    <div id="group-stage" style="display: none;">
+        <h2 class="phase-title">
+            <i class="fas fa-layer-group"></i> Phase de Groupes
+        </h2>
+        <div class="row" id="groups-container"></div>
+    </div>
+    
+    <!-- Huitièmes de Finale -->
+    <div id="round-16" style="display: none;">
+        <h2 class="phase-title">
+            <i class="fas fa-medal"></i> Huitièmes de Finale
+        </h2>
+        <div class="knockout-bracket" id="round-16-container"></div>
+    </div>
+    
+    <!-- Quarts de Finale -->
+    <div id="quarter-finals" style="display: none;">
+        <h2 class="phase-title">
+            <i class="fas fa-star"></i> Quarts de Finale
+        </h2>
+        <div class="knockout-bracket" id="quarter-finals-container"></div>
+    </div>
+    
+    <!-- Demi-Finales -->
+    <div id="semi-finals" style="display: none;">
+        <h2 class="phase-title">
+            <i class="fas fa-crown"></i> Demi-Finales
+        </h2>
+        <div class="knockout-bracket" id="semi-finals-container"></div>
+    </div>
+    
+    <!-- Finale -->
+    <div id="final" style="display: none;">
+        <h2 class="phase-title">
+            <i class="fas fa-trophy"></i> Finale
+        </h2>
+        <div class="knockout-bracket" id="final-container"></div>
+    </div>
+    
+    <!-- Champion -->
+    <div id="champion-section" style="display: none;">
+        <div class="champion-card">
+            <div class="trophy-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h2 id="champion-name">Champion</h2>
+            <p style="color: var(--can-dark); font-size: 1.5rem; font-weight: 600;">
+                🏆 Champion CAN 2025 🏆
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <h3>Simulation en cours...</h3>
+        <p id="loading-text">Initialisation...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const groups = {{ groups|tojson }};
+let tournamentData = {};
+
+function showLoading(text) {
+    document.getElementById('loading-overlay').style.display = 'flex';
+    document.getElementById('loading-text').textContent = text;
+}
+
+function hideLoading() {
+    document.getElementById('loading-overlay').style.display = 'none';
+}
+
+async function predictMatch(home, away, isGroup = true) {
+    const response = await fetch('/api/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            home_team: home,
+            away_team: away,
+            is_group: isGroup
+        })
+    });
+    return await response.json();
+}
+
+function generateScore(probability) {
+    // Génère un score réaliste basé sur la probabilité
+    const random = Math.random();
+    if (random < probability * 0.6) {
+        return Math.floor(Math.random() * 2) + 1; // 1-2 buts
+    } else if (random < probability * 0.9) {
+        return Math.floor(Math.random() * 2) + 2; // 2-3 buts
+    } else {
+        return Math.floor(Math.random() * 3) + 3; // 3-5 buts
+    }
+}
+
+async function simulateGroupStage() {
+    showLoading('Simulation de la phase de groupes...');
+    
+    const groupResults = {};
+    
+    for (const [groupName, teams] of Object.entries(groups)) {
+        const standings = teams.map(team => ({
+            name: team,
+            played: 0,
+            won: 0,
+            drawn: 0,
+            lost: 0,
+            gf: 0,
+            ga: 0,
+            gd: 0,
+            points: 0
+        }));
+        
+        const matches = [];
+        
+        // Générer tous les matchs du groupe
+        for (let i = 0; i < teams.length; i++) {
+            for (let j = i + 1; j < teams.length; j++) {
+                const prediction = await predictMatch(teams[i], teams[j], true);
+                
+                let homeScore, awayScore;
+                if (prediction.home_win_prob > prediction.away_win_prob) {
+                    homeScore = generateScore(prediction.home_win_prob);
+                    awayScore = Math.max(0, homeScore - Math.floor(Math.random() * 2) - 1);
+                } else {
+                    awayScore = generateScore(prediction.away_win_prob);
+                    homeScore = Math.max(0, awayScore - Math.floor(Math.random() * 2) - 1);
+                }
+                
+                matches.push({
+                    home: teams[i],
+                    away: teams[j],
+                    homeScore: homeScore,
+                    awayScore: awayScore
+                });
+                
+                // Mettre à jour les standings
+                const homeTeam = standings.find(t => t.name === teams[i]);
+                const awayTeam = standings.find(t => t.name === teams[j]);
+                
+                homeTeam.played++;
+                awayTeam.played++;
+                homeTeam.gf += homeScore;
+                homeTeam.ga += awayScore;
+                awayTeam.gf += awayScore;
+                awayTeam.ga += homeScore;
+                
+                if (homeScore > awayScore) {
+                    homeTeam.won++;
+                    homeTeam.points += 3;
+                    awayTeam.lost++;
+                } else if (awayScore > homeScore) {
+                    awayTeam.won++;
+                    awayTeam.points += 3;
+                    homeTeam.lost++;
+                } else {
+                    homeTeam.drawn++;
+                    awayTeam.drawn++;
+                    homeTeam.points++;
+                    awayTeam.points++;
+                }
+                
+                homeTeam.gd = homeTeam.gf - homeTeam.ga;
+                awayTeam.gd = awayTeam.gf - awayTeam.ga;
+            }
+        }
+        
+        // Trier le classement
+        standings.sort((a, b) => {
+            if (b.points !== a.points) return b.points - a.points;
+            if (b.gd !== a.gd) return b.gd - a.gd;
+            return b.gf - a.gf;
+        });
+        
+        groupResults[groupName] = { matches, standings };
+    }
+    
+    tournamentData.groupStage = groupResults;
+    displayGroupStage();
+    return groupResults;
+}
+
+function displayGroupStage() {
+    const container = document.getElementById('groups-container');
+    container.innerHTML = '';
+    
+    for (const [groupName, data] of Object.entries(tournamentData.groupStage)) {
+        const col = document.createElement('div');
+        col.className = 'col-lg-6 mb-4';
+        
+        let matchesHTML = data.matches.map(m => `
+            <div class="match-item">
+                <span class="team-name">${m.home}</span>
+                <span class="score">${m.homeScore}</span>
+                <span class="vs-divider">-</span>
+                <span class="score">${m.awayScore}</span>
+                <span class="team-name">${m.away}</span>
+            </div>
+        `).join('');
+        
+        let standingsHTML = `
+            <table class="standings-table">
+                <thead>
+                    <tr>
+                        <th>Équipe</th>
+                        <th>J</th>
+                        <th>V</th>
+                        <th>N</th>
+                        <th>D</th>
+                        <th>BP</th>
+                        <th>BC</th>
+                        <th>Diff</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.standings.map((team, idx) => `
+                        <tr class="${idx < 2 ? 'qualified' : ''}">
+                            <td style="text-align: left; font-weight: 600;">${team.name}</td>
+                            <td>${team.played}</td>
+                            <td>${team.won}</td>
+                            <td>${team.drawn}</td>
+                            <td>${team.lost}</td>
+                            <td>${team.gf}</td>
+                            <td>${team.ga}</td>
+                            <td>${team.gd > 0 ? '+' : ''}${team.gd}</td>
+                            <td style="font-weight: 700; color: var(--can-gold);">${team.points}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+        
+        col.innerHTML = `
+            <div class="group-box">
+                <div class="group-header">
+                    <i class="fas fa-layer-group"></i> GROUPE ${groupName}
+                </div>
+                ${matchesHTML}
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid rgba(255,215,0,0.2);">
+                    <h5 style="color: var(--can-gold); text-align: center; margin-bottom: 1rem;">Classement</h5>
+                    ${standingsHTML}
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(col);
+    }
+    
+    document.getElementById('group-stage').style.display = 'block';
+}
+
+async function simulateKnockoutRound(teams, roundName, isRound16 = false) {
+    showLoading(`Simulation des ${roundName}...`);
+    
+    const matches = [];
+    const winners = [];
+    
+    for (let i = 0; i < teams.length; i += 2) {
+        // Vérifier que les deux équipes existent
+        if (!teams[i] || !teams[i + 1]) {
+            console.error(`Équipe manquante: ${teams[i]} ou ${teams[i + 1]}`);
+            continue;
+        }
+        
+        const prediction = await predictMatch(teams[i], teams[i + 1], false);
+        
+        let homeScore, awayScore;
+        // Knockout: pas de nul, il faut un gagnant
+        do {
+            if (prediction.home_win_prob > prediction.away_win_prob) {
+                homeScore = generateScore(prediction.home_win_prob);
+                awayScore = Math.max(0, homeScore - Math.floor(Math.random() * 2) - 1);
+            } else {
+                awayScore = generateScore(prediction.away_win_prob);
+                homeScore = Math.max(0, awayScore - Math.floor(Math.random() * 2) - 1);
+            }
+        } while (homeScore === awayScore);
+        
+        const winner = homeScore > awayScore ? teams[i] : teams[i + 1];
+        
+        // Vérifier que le gagnant est défini
+        if (winner) {
+            winners.push(winner);
+        }
+        
+        matches.push({
+            home: teams[i],
+            away: teams[i + 1],
+            homeScore,
+            awayScore,
+            winner
+        });
+    }
+    
+    return { matches, winners };
+}
+
+function displayKnockoutRound(roundData, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    
+    roundData.matches.forEach(match => {
+        // Vérifier que toutes les données sont présentes
+        if (!match.home || !match.away || match.winner === undefined) {
+            console.error('Match incomplet:', match);
+            return;
+        }
+        
+        const matchDiv = document.createElement('div');
+        matchDiv.className = 'knockout-round';
+        matchDiv.innerHTML = `
+            <div class="knockout-match ${match.winner ? 'winner' : ''}">
+                <div class="knockout-team ${match.homeScore > match.awayScore ? 'winner-team' : ''}">
+                    <span class="team-name">${match.home || 'N/A'}</span>
+                    <span class="score">${match.homeScore !== undefined ? match.homeScore : '-'}</span>
+                </div>
+                <div class="knockout-team ${match.awayScore > match.homeScore ? 'winner-team' : ''}">
+                    <span class="team-name">${match.away || 'N/A'}</span>
+                    <span class="score">${match.awayScore !== undefined ? match.awayScore : '-'}</span>
+                </div>
+                <div style="text-align: center; margin-top: 1rem; color: var(--can-gold); font-weight: 600;">
+                    <i class="fas fa-arrow-right"></i> Qualifié: ${match.winner || 'N/A'}
+                </div>
+            </div>
+        `;
+        container.appendChild(matchDiv);
+    });
+}
+
+async function simulateTournament() {
+    // Reset
+    document.querySelectorAll('#group-stage, #round-16, #quarter-finals, #semi-finals, #final, #champion-section').forEach(el => {
+        el.style.display = 'none';
+    });
+    
+    // 1. Phase de groupes
+    const groupResults = await simulateGroupStage();
+    
+    // 2. Extraire les qualifiés (2 premiers de chaque groupe)
+    const firstPlace = [];
+    const secondPlace = [];
+    const thirdPlace = [];
+    
+    for (const [groupName, data] of Object.entries(groupResults)) {
+        if (data.standings && data.standings.length >= 3) {
+            const first = data.standings[0].name;
+            const second = data.standings[1].name;
+            const third = data.standings[2];
+            
+            if (first && second && third) {
+                firstPlace.push({ team: first, group: groupName, ...data.standings[0] });
+                secondPlace.push({ team: second, group: groupName, ...data.standings[1] });
+                thirdPlace.push({ team: third.name, group: groupName, ...third });
+            }
+        }
+    }
+    
+    // 3. Sélectionner les 4 meilleurs 3èmes (selon points, diff de buts, buts marqués)
+    thirdPlace.sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        if (b.gd !== a.gd) return b.gd - a.gd;
+        return b.gf - a.gf;
+    });
+    
+    const bestThirds = thirdPlace.slice(0, 4).map(t => t.team);
+    
+    // 4. Construire la liste des 16 qualifiés
+    const qualified16 = [
+        ...firstPlace.map(t => t.team),
+        ...secondPlace.map(t => t.team),
+        ...bestThirds
+    ];
+    
+    console.log('16 équipes qualifiées pour les huitièmes:', qualified16);
+    
+    if (qualified16.length !== 16) {
+        console.error(`ERREUR: ${qualified16.length} équipes au lieu de 16`);
+        hideLoading();
+        alert(`Erreur: ${qualified16.length} équipes qualifiées au lieu de 16`);
+        return;
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // 5. Huitièmes de finale (16 → 8 équipes)
+    const round16 = await simulateKnockoutRound(qualified16, 'huitièmes de finale', true);
+    tournamentData.round16 = round16;
+    displayKnockoutRound(round16, 'round-16-container');
+    document.getElementById('round-16').style.display = 'block';
+    
+    console.log('8 gagnants des huitièmes:', round16.winners);
+    
+    if (round16.winners.length !== 8) {
+        console.error(`ERREUR: ${round16.winners.length} gagnants au lieu de 8`);
+        hideLoading();
+        return;
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // 6. Quarts de finale (8 → 4 équipes)
+    const quarterFinals = await simulateKnockoutRound(round16.winners, 'quarts de finale');
+    tournamentData.quarterFinals = quarterFinals;
+    displayKnockoutRound(quarterFinals, 'quarter-finals-container');
+    document.getElementById('quarter-finals').style.display = 'block';
+    
+    console.log('4 gagnants des quarts:', quarterFinals.winners);
+    
+    if (quarterFinals.winners.length !== 4) {
+        console.error(`ERREUR: ${quarterFinals.winners.length} gagnants au lieu de 4`);
+        hideLoading();
+        return;
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // 7. Demi-finales (4 → 2 équipes)
+    const semiFinals = await simulateKnockoutRound(quarterFinals.winners, 'demi-finales');
+    tournamentData.semiFinals = semiFinals;
+    displayKnockoutRound(semiFinals, 'semi-finals-container');
+    document.getElementById('semi-finals').style.display = 'block';
+    
+    console.log('2 finalistes:', semiFinals.winners);
+    
+    if (semiFinals.winners.length !== 2) {
+        console.error(`ERREUR: ${semiFinals.winners.length} finalistes au lieu de 2`);
+        hideLoading();
+        return;
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // 8. Finale (2 → 1 champion)
+    const final = await simulateKnockoutRound(semiFinals.winners, 'finale');
+    tournamentData.final = final;
+    displayKnockoutRound(final, 'final-container');
+    document.getElementById('final').style.display = 'block';
+    
+    console.log('Champion:', final.winners[0]);
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // 9. Afficher le champion
+    if (final.winners.length > 0 && final.winners[0]) {
+        const champion = final.winners[0];
+        document.getElementById('champion-name').textContent = champion;
+        document.getElementById('champion-section').style.display = 'block';
+        
+        // Scroll vers le champion
+        document.getElementById('champion-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        console.error('Pas de champion trouvé');
+    }
+    
+    hideLoading();
+}
+</script>
+{% endblock %}
